@@ -118,7 +118,7 @@ function getQuery() {
   return word.slice(idx, idx + count)
 }
 
-fetch(`${BasePath}/dictionaries/english.json`).then(response => response.json()).then(json => {
+fetch(`${BasePath}dictionaries/english.json`).then(response => response.json()).then(json => {
   dictionaryBackup = json
   Object.keys(dictionaryBackup).filter((key) => key.length <= 2).forEach((key) => {
     delete dictionaryBackup[key]
@@ -126,7 +126,7 @@ fetch(`${BasePath}/dictionaries/english.json`).then(response => response.json())
 })
 peer.on('open', (id) => {
   // display join url
-  let url = `${BasePath}/game.html?id=${id}`
+  let url = `${BasePath}game.html?id=${id}`
   document.getElementById('id').innerHTML = `<a href=${url}>${url}</a>`
   
   peer.on('connection', function(conn) {
