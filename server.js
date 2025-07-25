@@ -15,7 +15,7 @@ function handleData(conn, type, data) {
     case MessageType.ClientHello:
       if (conn.label in connections) { return conn.close() }
       connections[conn.label] = conn
-      state.players[conn.label] = data.name
+      state.players[conn.label] = `player_${data.name+}`
       break
     case MessageType.Rename:
       if (Object.values(state.players).includes(data.name)) { return }
@@ -104,7 +104,7 @@ function deadlineTimeout(delay) {
   lastDeadlineID = setTimeout(() => {
     if (state.started && state.game?.deadline && (state.game.deadline < Date.now())) {
       label = state.game.order[state.game.turn]
-      state.game.lastSolve[label] = String.fromCodePoint(55357) + String.fromCodePoint(56468)
+      state.game.lastSolve[label] = String.fromCodePoint(55357) + String.fromCodePoint(56468) + `(${word})`
       state.game.lives[label] -= 1
       if (state.game.lives[label] < 1) {
         removePlayerFromGame(label)
@@ -139,9 +139,10 @@ function removePlayerFromGame(label) {
   delete state.game.letters[label]
 }
 
+let word = ''
 function getQuery() {
   let words = Object.keys(dictionary)
-  let word = words[(Math.random() * words.length) | 0]
+  word = words[(Math.random() * words.length) | 0]
   let count = 2
   if (Math.random() > 0.5) {
     count += 1

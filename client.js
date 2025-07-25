@@ -44,7 +44,7 @@ function render() {
     gameDivs[2].innerHTML = `(${~~((state.game.deadline - Date.now()) / 1000)} sec)`
     gameDivs[3].innerHTML = ''
     gameDivs[3].innerHTML += '<ul>' + state.game.order.map((label, idx) => {
-      return `<li>${state.players[label]} ${String.fromCodePoint(0x2764).repeat(state.game.lives[label])} ${state.game.turn == idx ? '(turn)' : ''} - ${state.game.lastSolve[label]}</li>`
+      return `<li>${state.players[label]} ${(String.fromCodePoint(10084) + String.fromCodePoint(65039)).repeat(state.game.lives[label])} ${state.game.turn == idx ? '(turn)' : ''} - ${state.game.lastSolve[label]}</li>`
     }).join('') + '</ul>'
   }
 }
