@@ -7,17 +7,18 @@
 </head>
 
 <body>
-  <span id="game0"></span> 
-  <span id="game1"></span>
-  <span id="game2"></span>
-  <h3>You are: 
+  <span id="game0"></span>
+  <div style="display: grid; grid-auto-flow: column;">
+    <span id="game1"></span><span id="game2"></span>
+  </div>
+  <span id="game3"></span>
+  <h3>You are:
     <span id='id'>LOADING</span>
     <button type="button" onclick="changeName()">change</button>
   </h3>
   <div id="general-buttons"></div>
   <h2>Players on server:</h1>
-  <ul id='player-list'></ul>
+    <ul id='player-list'></ul>
 </body>
 
 </html>
-
