@@ -15,7 +15,7 @@ function handleData(conn, type, data) {
     case MessageType.ClientHello:
       if (conn.label in connections) { return conn.close() }
       connections[conn.label] = conn
-      state.players[conn.label] = `player_${data.name+}`
+      state.players[conn.label] = `player_${data.name}`
       break
     case MessageType.Rename:
       if (Object.values(state.players).includes(data.name)) { return }
