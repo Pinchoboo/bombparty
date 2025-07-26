@@ -27,7 +27,7 @@ peer.on('open', (id) => {
     })
     conn.on('close', () => {
         console.log('closed')
-        document.getElementsByTagName('body')[0].innerHTML = "<h1>Disconnected from server</h1><h2><a href='..'>Host one yourself?<a></h2>"
+        document.getElementsByTagName('body')[0].innerHTML = "<h1>Disconnected from server</h1><h2><a href='./.'>Host one yourself?<a></h2>"
     })
     conn.on('error', () => { console.log('error') })
 })
@@ -38,6 +38,6 @@ function action(x) {
 
 setTimeout(() => {
     if (!label) {
-        document.getElementsByTagName('body')[0].innerHTML = "<h1>Could not connect to server</h1><h2><a href='..'>Host one yourself?<a></h2>"
+        document.getElementsByTagName('body')[0].innerHTML = "<h1>Could not connect to server</h1><h2><a href='./.'>Host one yourself?<a></h2>"
     }
 }, 4000)
