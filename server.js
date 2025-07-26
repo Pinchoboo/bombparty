@@ -34,7 +34,6 @@ function update(label, type, data) {
         state.game.turn = (state.game.turn + 1) % state.game.order.length
         startTurn()
       }
-      state.game.typed = ''
       break
     case MessageType.StartGameRequest:
       if (state.started) { return }
@@ -89,11 +88,11 @@ function deadlineTimeout(delay) {
   if (lastDeadlineID) { clearTimeout(lastDeadlineID); }
   lastDeadlineID = setTimeout(() => {
     if (state.started && state.game?.deadline && (state.game.deadline < Date.now())) {
-      label_2 = state.game.order[state.game.turn]
-      state.game.lastSolve[label_2] = String.fromCodePoint(55357) + String.fromCodePoint(56468) + `(${word})`
-      state.game.lives[label_2] -= 1
-      if (state.game.lives[label_2] < 1) {
-        removePlayerFromGame(label_2)
+      let deadline_label = state.game.order[state.game.turn]
+      state.game.lastSolve[deadline_label] = String.fromCodePoint(55357) + String.fromCodePoint(56468) + `(${word})`
+      state.game.lives[deadline_label] -= 1
+      if (state.game.lives[deadline_label] < 1) {
+        removePlayerFromGame(deadline_label)
       } else {
         state.game.turn = (state.game.turn + 1) % state.game.order.length
       }
