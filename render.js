@@ -81,10 +81,13 @@ function renderOrder() {
 
 function renderPlayers() {
     elems['players'].innerHTML = Object.keys(state.players).map((label) => {
-        return `<li>${label in state.queue ? '(queued)' : ''} ${x(state.players[label])}</li>`
+        let name = x(state.players[label])
+        let queued = label in state.queue
+        if (queued) { name = `<b>${name}</b>` }
+        return `<li ${queued ? '' : 'style="list-style:none"'}>${name}</li>`
     }).join('')
 }
-
+1
 function timerLoop() {
     if (state?.started && state?.game?.deadline) {
         setTimeout(() => {
