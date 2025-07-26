@@ -89,11 +89,11 @@ function deadlineTimeout(delay) {
   if (lastDeadlineID) { clearTimeout(lastDeadlineID); }
   lastDeadlineID = setTimeout(() => {
     if (state.started && state.game?.deadline && (state.game.deadline < Date.now())) {
-      label = state.game.order[state.game.turn]
-      state.game.lastSolve[label] = String.fromCodePoint(55357) + String.fromCodePoint(56468) + `(${word})`
-      state.game.lives[label] -= 1
-      if (state.game.lives[label] < 1) {
-        removePlayerFromGame(label)
+      label_2 = state.game.order[state.game.turn]
+      state.game.lastSolve[label_2] = String.fromCodePoint(55357) + String.fromCodePoint(56468) + `(${word})`
+      state.game.lives[label_2] -= 1
+      if (state.game.lives[label_2] < 1) {
+        removePlayerFromGame(label_2)
       } else {
         state.game.turn = (state.game.turn + 1) % state.game.order.length
       }
