@@ -9,8 +9,9 @@ state = { players: {}, queue: {}, started: false, game: {} }
 function update(label, type, data) {
   switch (type) {
     case MessageType.Rename:
-      if (Object.values(state.players).includes(data.name)) { return }
-      state.players[label] = data.name
+      new_name = data.name.splice.substring(0, 20)
+      if (Object.values(state.players).includes(new_name)) { return }
+      state.players[label] = new_name
       break
     case MessageType.EnterGame:
       if (state.queue[label]) { return }
