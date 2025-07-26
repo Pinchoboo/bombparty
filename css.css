@@ -1,0 +1,18 @@
+body {
+    margin: auto;
+    text-align: center;
+}
+
+ul {
+    display: inline-block;
+    text-align: left;
+    list-style-position: inside;
+}
+
+#input {
+    text-align: right;
+}
+
+#timer {
+    text-align: left;
+}
