@@ -1,45 +1,36 @@
-let peer = new Peer();
+const BasePath = location.protocol + '//' + location.host + location.pathname;
 let connections = {}
 let used = {}
 let dictionaryBackup = {}
 let dictionary = {}
 let played = {}
-let state = { players: {}, queue: {}, started: false, game: {} }
+state = { players: {}, queue: {}, started: false, game: {} }
 
-const BasePath = location.protocol + '//' + location.host + location.pathname;
-
-function handleData(conn, type, data) {
-  if (type != MessageType.ClientHello && !(conn.label in connections)) { return }
-
+function update(label, type, data) {
   switch (type) {
-    case MessageType.ClientHello:
-      if (conn.label in connections) { return conn.close() }
-      connections[conn.label] = conn
-      state.players[conn.label] = `player_${data.name}`
-      break
     case MessageType.Rename:
       if (Object.values(state.players).includes(data.name)) { return }
-      state.players[conn.label] = data.name
+      state.players[label] = data.name
       break
     case MessageType.EnterGame:
-      if (state.queue[conn.label]) { return }
-      state.queue[conn.label] = true
+      if (state.queue[label]) { return }
+      state.queue[label] = true
       break
     case MessageType.LeaveGame:
-      if (!state.queue[conn.label]) { return }
-      removePlayerFromGame(conn.label)
+      if (!state.queue[label]) { return }
+      removePlayerFromGame(label)
       break
     case MessageType.Typed:
-      if (!state.started || state.game.order[state.game.turn] != conn.label) { return }
+      if (!state.started || state.game.order[state.game.turn] != label) { return }
       state.game.typed = data
       break
     case MessageType.Submit:
-      if (!state.started || state.game.order[state.game.turn] != conn.label) { return }
+      if (!state.started || state.game.order[state.game.turn] != label) { return }
       data = data.trim().toLowerCase()
       if (dictionary[data] && !played[data] && data.includes(state.game.query)) {
         delete dictionary[data]
         played[data] = true
-        state.game.lastSolve[conn.label] = data
+        state.game.lastSolve[label] = data
         state.game.turn = (state.game.turn + 1) % state.game.order.length
         startTurn()
       }
@@ -69,11 +60,6 @@ function handleData(conn, type, data) {
   sendStateUpdate()
 }
 
-function sendStateUpdate() {
-  for (const conn of Object.values(connections)) {
-    conn.send(StateUpdate(state))
-  }
-}
 
 function removePlayer(label) {
   if (label in connections) {
@@ -157,20 +143,4 @@ fetch(`${BasePath}dictionaries/english.json`).then(response => response.json()).
   Object.keys(dictionaryBackup).filter((key) => key.length <= 2).forEach((key) => {
     delete dictionaryBackup[key]
   })
-})
-
-peer.on('open', (id) => {
-  // display join url
-  let url = `${BasePath}game.html?id=${id}`
-  document.getElementById('id').innerHTML = `<a href=${url}>${url}</a>`
-
-  peer.on('connection', function (conn) {
-    conn.on('data', (data) => handleData(conn, data.type, data.data));
-    conn.on('close', () => removePlayer(conn.label))
-    conn.on('error', (err) => { console.log(err) })
-  });
-
-  peer.on('close', () => { peer.destroy() })
-  peer.on('disconnected', () => { peer.reconnect() })
-  peer.on('error', (err) => { console.log(err) })
 })

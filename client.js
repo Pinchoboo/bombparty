@@ -1,98 +1,17 @@
-const urlParams = new URLSearchParams(window.location.search);
-
-const idSpan = document.getElementById('id')
-const generalButtons = document.getElementById('general-buttons')
-const playerList = document.getElementById('player-list')
-const gameDivs = [document.getElementById('game0'), document.getElementById('game1'), document.getElementById('game2'), document.getElementById('game3')]
-
-let peer = new Peer();
-let conn = null
 let state = null
+let label = null
 
-function handleData(data) {
-  if (data.type != MessageType.StateUpdate) { return console.log(data) }
-  state = data.data
-  render()
-}
-
-function render() {
-  idSpan.innerHTML = state.players[conn.label]
-  playerList.innerHTML = Object.keys(state.players).map((label) => {
-    return `<li>${state.players[label]}${label in state.queue ? ' (queued)' : ''}</li>`
-  }).join('')
-
-  generalButtons.innerHTML = `
-  ${conn.label in state.queue ? '<button type="button" onclick="leaveGame()">Leave game</button>' : '<button type="button" onclick="enterGame()">Join next game</button>'}
-  `
-
-  if (!state.started) {
-    if (conn.label in state.queue) {
-      generalButtons.innerHTML = '<button onclick="startGame()">Start Game</button>' + generalButtons.innerHTML
-    }
-    gameDivs[0].innerHTML = ''
-    gameDivs[1].innerHTML = ''
-    gameDivs[2].innerHTML = ''
-    gameDivs[3].innerHTML = ''
-  } else {
-    let isMyTurn = state.game.order[state.game.turn] != conn.label
-
-    gameDivs[0].innerHTML = `<h2>Type a word containing: ${state.game.query}</h2>`
-    if (isMyTurn || state.game.typed == '') {
-      gameDivs[1].innerHTML = `<input type='text' id='input' onkeyup='typed(this)' onchange='submit(this)' ${!isMyTurn ? '' : 'disabled'} value='${state.game.typed}'>`;
-      document.getElementById('input').select();
-    }
-    gameDivs[2].innerHTML = `(${~~((state.game.deadline - Date.now()) / 1000)} sec)`
-    gameDivs[3].innerHTML = ''
-    gameDivs[3].innerHTML += '<ul>' + state.game.order.map((label, idx) => {
-      return `<li>${state.players[label]} ${(String.fromCodePoint(10084) + String.fromCodePoint(65039)).repeat(state.game.lives[label])} ${state.game.turn == idx ? '(turn)' : ''} - ${state.game.lastSolve[label]}</li>`
-    }).join('') + '</ul>'
-  }
-}
-
-function updateTimer() {
-  if (state?.started && state?.game?.deadline) {
-    setTimeout(() => {
-      gameDivs[2].innerHTML = `(${Math.max(0, ~~Math.ceil((state.game.deadline - Date.now()) / 1000))} sec)`
-      updateTimer()
-    }, (state.game.deadline - Date.now()) % 1000);
-  } else {
-    gameDivs[2].innerHTML = ''
-    setTimeout(() => { updateTimer() }, 1000)
-  }
-}
-updateTimer()
-
-function enterGame() { conn.send(EnterGame()) }
-function leaveGame() { conn.send(LeaveGame()) }
-function startGame() { conn.send(StartGameRequest()) }
+function enterGame() { action(EnterGame()) }
+function leaveGame() { action(LeaveGame()) }
+function startGame() { action(StartGameRequest()) }
 function changeName() {
-  conn.send(Rename(prompt("Enter new name", state.players[conn.label])))
+  action(Rename(prompt("Enter new name", state.players[label])))
 }
 function typed(elem) {
-  conn.send(Typed(elem.value))
+  action(Typed(elem.value))
 }
 function submit(elem) {
-  conn.send(Submit(elem.value))
+  action(Submit(elem.value))
   elem.focus();
   elem.select();
 }
-
-
-peer.on('open', (id) => {
-
-  peer.on('close', () => { peer.destroy() })
-
-  peer.on('disconnected', () => { peer.reconnect() })
-
-  peer.on('error', (err) => { console.log(err) })
-
-  conn = peer.connect(urlParams.get('id'), { reliable: true })
-  conn.on('data', handleData)
-  conn.on('open', () => {
-    console.log('sending client hello')
-    conn.send(ClientHello(conn.label))
-  })
-  conn.on('close', () => { console.log('closed') })
-  conn.on('error', () => { console.log('error') })
-})
-

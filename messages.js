@@ -12,11 +12,11 @@ const MessageType = createEnum(
 );
 
 function message(type, data) {
-  return {type: type, data: data}
+  return { type: type, data: data }
 }
 
-function ClientHello(name) { return message(MessageType.ClientHello, {name: name}) }
-function Rename(name) { return message(MessageType.Rename, {name: name}) }
+function ClientHello(name) { return message(MessageType.ClientHello, { name: name }) }
+function Rename(name) { return message(MessageType.Rename, { name: name }) }
 function StateUpdate(state) { return message(MessageType.StateUpdate, state) }
 function Typed(string) { return message(MessageType.Typed, string) }
 function Submit(string) { return message(MessageType.Submit, string) }
