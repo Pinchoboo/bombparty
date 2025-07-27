@@ -54,7 +54,7 @@ function update(label, type, data) {
       }
       break
     default:
-      console.log(['NOT FOUND', conn, type, data])
+      console.log(['NOT FOUND', label, type, data])
       return
   }
   sendStateUpdate()

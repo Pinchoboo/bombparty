@@ -4,13 +4,16 @@ state.players[label] = label
 let peer = new Peer();
 
 function handleData(conn, type, data) {
+    console.log(`[${conn.label}]${type}: ${JSON.stringify(data)}`)
     if (type == MessageType.ClientHello) {
         if (conn.label in connections) { return conn.close() }
         connections[conn.label] = conn
-        state.players[conn.label] = `player_${data.name}`
+        state.players[conn.label] = `player_${conn.label}`
         sendStateUpdate()
     } else if (!(conn.label in connections)) {
         return
+    } else if (type == MessageType.Pong) {
+        alive_check.delete(conn.label)
     } else {
         update(conn.label, type, data)
     }
@@ -22,8 +25,9 @@ function action(x) {
 
 function sendStateUpdate() {
     render(state, label)
+    let timestamp = Date.now()
     for (const conn of Object.values(connections)) {
-        conn.send(StateUpdate(state))
+        conn.send(StateUpdate({ state: state, timestamp: timestamp }))
     }
 }
 
@@ -44,3 +48,16 @@ peer.on('open', (id) => {
     peer.on('disconnected', () => { peer.reconnect() })
     peer.on('error', (err) => { console.log(err) })
 })
+
+
+alive_check = new Set()
+setInterval(() => {
+    alive_check.forEach(l => {
+        connections[l]?.close()
+        removePlayer(l)
+    });
+    alive_check = new Set(Object.keys(connections))
+    alive_check.forEach(l => {
+        connections[l]?.send(Ping(Date.now()))
+    });
+}, 15 * 1000)
