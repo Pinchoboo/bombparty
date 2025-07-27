@@ -30,6 +30,16 @@ function update(label, type, data) {
       data = data.trim().toLowerCase()
       if (dictionary[data] && !played[data] && data.includes(state.game.query)) {
         delete dictionary[data]
+        for (const letter of data) {
+          if (letter in state.game.letters[label]) {
+            state.game.letters[label][letter] = Math.max(0, state.game.letters[label][letter] - 1)
+          }
+        }
+        if (Object.values(state.game.letters[label]).every(v => v == 0)) {
+          state.game.letters[label] = alphabetSet();
+          state.game.lives[label] += 1
+        }
+
         played[data] = true
         state.game.lastSolve[label] = data
         state.game.turn = (state.game.turn + 1) % state.game.order.length
@@ -49,7 +59,7 @@ function update(label, type, data) {
         query: getQuery(),
         deadline: deadline(),
         lives: Object.fromEntries(order.map((id) => [id, 3])),
-        letters: Object.fromEntries(order.map((id) => [id, {}])),
+        letters: Object.fromEntries(order.map((id) => [id, alphabetSet()])),
         lastSolve: Object.fromEntries(order.map((id) => [id, '']))
       }
       break
@@ -81,6 +91,14 @@ function deadline() {
   let d = (10 * 1000)
   deadlineTimeout(d + 500)
   return Date.now() + d
+}
+
+function alphabetSet() {
+  let alphabet = {}
+  for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
+    alphabet[letter] = 1
+  }
+  return alphabet
 }
 
 

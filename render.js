@@ -16,6 +16,7 @@ function insert_game_html() {
         <div style="display: grid; grid-auto-flow: column;">
             <span id="input"></span><span id="timer"></span>
         </div>
+        <div id="bonus"></div>
         <span id="order"></span>
         <h3>Username:
             <span id="username"></span>
@@ -25,7 +26,7 @@ function insert_game_html() {
         <h2>Players on server:</h1>
         <ul id='players'></ul>
     `;
-    ['prompt', 'input', 'timer', 'order', 'username', 'buttons', 'players'].forEach((x) => { elems[x] = document.getElementById(x) });
+    ['prompt', 'bonus', 'input', 'timer', 'order', 'username', 'buttons', 'players'].forEach((x) => { elems[x] = document.getElementById(x) });
     timerLoop()
 }
 
@@ -34,22 +35,23 @@ function render(state, label) {
     elems['buttons'].innerHTML = `
         ${label in state.queue ? '<button type="button" onclick="leaveGame()">Leave game</button>' : '<button type="button" onclick="enterGame()">Join next game</button>'}
     `
-    renderPlayers()
+    renderPlayers(state)
 
     if (!state.started) {
-        ['prompt', 'input', 'timer', 'order'].forEach((x) => elems[x].innerHTML = '');
+        ['prompt', 'bonus', 'input', 'timer', 'order'].forEach((x) => elems[x].innerHTML = '');
         if (label in state.queue) {
             elems['buttons'].innerHTML = '<button onclick="startGame()">Start Game</button>' + elems['buttons'].innerHTML
         }
     } else {
-        renderTimer()
-        renderPrompt()
+        renderTimer(state)
+        renderPrompt(state)
+        renderBonus(state, label)
         renderInput(state, label)
-        renderOrder()
+        renderOrder(state)
     }
 }
 
-function renderTimer() {
+function renderTimer(state) {
     elems['timer'].innerHTML = `(${Math.max(0, ~~Math.ceil((state.game.deadline - Date.now()) / 1000))} sec)`
 }
 
@@ -66,20 +68,28 @@ function renderInput(state, label) {
     if (isMyTurn && state.game.typed == '') { textinput.focus() }
 }
 
-function renderPrompt() {
-    elems['prompt'].innerHTML = `<h2>Type a word containing: ${state.game.query}</h2>`
+function renderPrompt(state) {
+    elems['prompt'].innerHTML = `<h2>Type a word containing: ${x(state.game.query)}</h2>`
 }
 
-function renderOrder() {
+function renderBonus(state, label) {
+    let letters_to_use = ''
+    for (const [key, value] of Object.entries(state.game.letters[label])) {
+        if (value > 0) { letters_to_use += key }
+    }
+    elems['bonus'].innerHTML = `Bonus life when using all letters: ${x(letters_to_use)}`
+}
+
+function renderOrder(state) {
     elems['order'].innerHTML = '<ul>' + state.game.order.map((label, idx) => {
         let name = x(state.players[label])
         let turn = state.game.turn == idx
         if (turn) { name = `<b>${name}</b>` }
-        return `<li ${turn ? '' : 'style="list-style:none"'}>${name} ${hearts(state.game.lives[label])} - ${state.game.lastSolve[label]}</li>`
+        return `<li ${turn ? '' : 'style="list-style:none"'}>${name} ${hearts(state.game.lives[label])} - ${x(state.game.lastSolve[label])}</li>`
     }).join('') + '</ul>'
 }
 
-function renderPlayers() {
+function renderPlayers(state) {
     elems['players'].innerHTML = Object.keys(state.players).map((label) => {
         let name = x(state.players[label])
         let queued = label in state.queue
@@ -87,11 +97,11 @@ function renderPlayers() {
         return `<li ${queued ? '' : 'style="list-style:none"'}>${name}</li>`
     }).join('')
 }
-1
+
 function timerLoop() {
     if (state?.started && state?.game?.deadline) {
         setTimeout(() => {
-            renderTimer()
+            renderTimer(state)
             timerLoop()
         }, (state.game.deadline - Date.now()) % 1000);
     } else {
