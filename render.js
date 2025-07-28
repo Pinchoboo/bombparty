@@ -73,11 +73,13 @@ function renderPrompt(state) {
 }
 
 function renderBonus(state, label) {
-    let letters_to_use = ''
-    for (const [key, value] of Object.entries(state.game.letters[label])) {
-        if (value > 0) { letters_to_use += key }
-    }
-    elems['bonus'].innerHTML = `Bonus life when using all letters: ${x(letters_to_use)}`
+	if(state.game.order.includes(label)) {
+		let letters_to_use = ''
+		for (const [key, value] of Object.entries(state.game.letters[label])) {
+			if (value > 0) { letters_to_use += key }
+		}
+		elems['bonus'].innerHTML = `Bonus life when using all letters: ${x(letters_to_use)}`
+	}
 }
 
 function renderOrder(state) {
