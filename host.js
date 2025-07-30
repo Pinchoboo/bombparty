@@ -1,10 +1,11 @@
+const IS_HOST = true;
 label = 'host';
 state.players[label] = label
 
 let peer = new Peer();
 
 function handleData(conn, type, data) {
-    console.log(`[${conn.label}]${type}: ${JSON.stringify(data)}`)
+    debug(`[${conn.label}]${type}: ${JSON.stringify(data)}`)
     if (type == MessageType.ClientHello) {
         if (conn.label in connections) { return conn.close() }
         connections[conn.label] = conn
@@ -36,7 +37,7 @@ render(state, label)
 peer.on('open', (id) => {
     // display join url
     let url = `${BasePath}join.html?id=${id}`
-    document.getElementById('top_pannel').innerHTML = `Let others join: <a href=${url} target="_blank">${url}</a>`
+    document.getElementById('top_panel').innerHTML = `Let others join: <a href=${url} target="_blank">${url}</a>`
 
     peer.on('connection', function (conn) {
         conn.on('data', (data) => handleData(conn, data.type, data.data));

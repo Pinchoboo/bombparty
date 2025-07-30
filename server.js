@@ -4,7 +4,12 @@ let used = {}
 let dictionaryBackup = {}
 let dictionary = {}
 let played = {}
-state = { players: {}, queue: {}, started: false, game: {} }
+state = { players: {}, queue: {}, started: false, game: {}, settings: {
+	seconds: DEFAULT_SECONDS,
+	alphabet: DEFAULT_ALPHABET,
+	lives: DEFAULT_LIVES,
+	anyone_can_start: DEFAULT_ANYONE_CAN_START
+} }
 
 function update(label, type, data) {
   switch (type) {
@@ -36,8 +41,10 @@ function update(label, type, data) {
           }
         }
         if (Object.values(state.game.letters[label]).every(v => v == 0)) {
+		  if(Object.keys(state.game.letters[label]).length != 0){
+			state.game.lives[label] += 1
+		  }
           state.game.letters[label] = alphabetSet();
-          state.game.lives[label] += 1
         }
 
         played[data] = true
@@ -58,7 +65,7 @@ function update(label, type, data) {
         turn: 0,
         query: getQuery(),
         deadline: deadline(),
-        lives: Object.fromEntries(order.map((id) => [id, 3])),
+        lives: Object.fromEntries(order.map((id) => [id, state.settings.lives])),
         letters: Object.fromEntries(order.map((id) => [id, alphabetSet()])),
         lastSolve: Object.fromEntries(order.map((id) => [id, '']))
       }
@@ -68,6 +75,26 @@ function update(label, type, data) {
       return
   }
   sendStateUpdate()
+}
+
+function update_settings(elem) {
+	elem = document.getElementById(elem.id)
+	switch (elem.id) {
+		case 'anyone_can_start_input': 
+			state.settings.anyone_can_start = elem.checked
+			sendStateUpdate()
+		break
+		case 'seconds_input': 
+			state.settings.seconds = Number(elem.value)
+		break
+		case 'lives_input': 
+			state.settings.lives = Number(elem.value)
+		break
+		case 'alphabet_input': 
+			state.settings.alphabet = elem.value
+		break
+		default: console.log('Error updating:', elem)
+	}
 }
 
 
@@ -88,15 +115,15 @@ function startTurn() {
 }
 
 function deadline() {
-  let d = (10 * 1000)
+  let d = (state.settings.seconds * 1000)
   deadlineTimeout(d + 500)
   return Date.now() + d
 }
 
 function alphabetSet() {
   let alphabet = {}
-  for (const letter of 'abcdefghijklmnopqrstuvwxyz') {
-    alphabet[letter] = 1
+  for (const letter of state.settings.alphabet) {
+    alphabet[letter] = (alphabet[letter] || 0) + 1
   }
   return alphabet
 }
@@ -152,7 +179,7 @@ function getQuery() {
     count += 1
   }
   let idx = (Math.random() * (word.length - count + 1)) | 0
-  console.log(word)
+  debug(word)
   return word.slice(idx, idx + count)
 }
 

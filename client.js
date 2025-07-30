@@ -15,3 +15,5 @@ function submit(elem) {
   elem.focus();
   elem.select();
 }
+
+function debug(x) {}
