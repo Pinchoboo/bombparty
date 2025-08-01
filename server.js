@@ -176,14 +176,14 @@ function removePlayerFromGame(label) {
 let word = ''
 function getQuery() {
   let words = Object.keys(dictionary)
-  word = words[(Math.random() * words.length) | 0] | ''
+  word = words[(Math.random() * words.length) | 0] || ''
   let count = 2
   if (Math.random() > 0.5) {
     count += 1
   }
   let idx = (Math.random() * (word.length - count + 1)) | 0
   debug(word)
-  return word.slice(idx, idx + count)
+  return word.slice(idx, idx + count) || ''
 }
 
 let language = new URLSearchParams(window.location.search).get('language');
