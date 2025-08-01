@@ -16,4 +16,4 @@ function submit(elem) {
   elem.select();
 }
 
-function debug(x) {}
+function debug(_) {}

@@ -17,9 +17,10 @@ function handleData(data) {
 }
 
 peer.on('open', (id) => {
+	onbeforeunload = (_) => { peer.destroy() }
 
     peer.on('close', () => {
-        peer.destroy()
+		peer.destroy()
         document.getElementsByTagName('body')[0].innerHTML = "<h1>Disconnected from server</h1><h2><a href='./.'>Host one yourself?<a></h2>"
     })
 

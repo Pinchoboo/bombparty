@@ -35,6 +35,7 @@ function sendStateUpdate() {
 insert_game_html()
 render(state, label)
 peer.on('open', (id) => {
+	onbeforeunload = (_) => { peer.destroy() }
     // display join url
     let url = `${BasePath}join.html?id=${id}`
     document.getElementById('top_panel').innerHTML = `Let others join: <a href=${url} target="_blank">${url}</a>`
