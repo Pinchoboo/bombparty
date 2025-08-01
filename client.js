@@ -1,3 +1,5 @@
+const urlParams = new URLSearchParams(window.location.search);
+const IS_HOST = urlParams.get('id') === null;
 let state = null
 let label = null
 
@@ -17,3 +19,16 @@ function submit(elem) {
 }
 
 function debug(_) {}
+
+if(IS_HOST){
+	let script = document.createElement('script');
+	script.src = './server.js';
+	document.head.append(script)
+	script = document.createElement('script');
+	script.src = './host.js';
+	document.head.append(script)
+} else {
+	let script = document.createElement('script');
+	script.src = './join.js';
+	document.head.append(script)
+}

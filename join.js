@@ -1,6 +1,3 @@
-const IS_HOST = false;
-const urlParams = new URLSearchParams(window.location.search);
-
 let peer = new Peer();
 let conn = null
 

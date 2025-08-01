@@ -1,4 +1,4 @@
-const BasePath = location.protocol + '//' + location.host + location.pathname.replaceAll(/index\.html/g,'');
+const BasePath = location.protocol + '//' + location.host + location.pathname;
 let connections = {}
 let used = {}
 let dictionarySet = new Set()

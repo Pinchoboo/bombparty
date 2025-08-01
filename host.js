@@ -1,4 +1,3 @@
-const IS_HOST = true;
 label = 'host';
 state.players[label] = label
 
@@ -34,10 +33,11 @@ function sendStateUpdate() {
 
 insert_game_html()
 render(state, label)
+document.getElementById('top_panel').innerHTML = `Starting server...`
 peer.on('open', (id) => {
 	onbeforeunload = (_) => { peer.destroy() }
     // display join url
-    let url = `${BasePath}join.html?id=${id}`
+    let url = `${BasePath}?id=${id}`
     document.getElementById('top_panel').innerHTML = `Let others join: <a href=${url} target="_blank">${url}</a>`
 
     peer.on('connection', function (conn) {

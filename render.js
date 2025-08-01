@@ -29,8 +29,9 @@ function insert_game_html() {
     ['prompt', 'bonus', 'input', 'timer', 'order', 'username', 'buttons', 'players'].forEach((x) => { elems[x] = document.getElementById(x) });
     timerLoop()
 
-	let host_panel = document.getElementById('bottom_panel')
-	if(host_panel) {
+	
+	if(IS_HOST) {
+		let host_panel = document.getElementById('bottom_panel')
 		host_panel.innerHTML = `
 			<h3>Settings</h3>
 			<label for="anyone_can_start_input">Anyone can start a game</label>
