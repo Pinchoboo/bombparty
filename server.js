@@ -77,7 +77,7 @@ function update(label, type, data) {
   sendStateUpdate()
 }
 
-function update_settings(elem) {
+async function update_settings(elem) {
 	elem = document.getElementById(elem.id)
 	switch (elem.id) {
 		case 'anyone_can_start_input': 
@@ -92,6 +92,9 @@ function update_settings(elem) {
 		break
 		case 'alphabet_input': 
 			state.settings.alphabet = elem.value
+		break
+		case 'custom_dictionary_input': 
+			loadDictionary(await elem.files.item(0).text())
 		break
 		default: console.log('Error updating:', elem)
 	}
@@ -173,7 +176,7 @@ function removePlayerFromGame(label) {
 let word = ''
 function getQuery() {
   let words = Object.keys(dictionary)
-  word = words[(Math.random() * words.length) | 0]
+  word = words[(Math.random() * words.length) | 0] | ''
   let count = 2
   if (Math.random() > 0.5) {
     count += 1
@@ -183,9 +186,16 @@ function getQuery() {
   return word.slice(idx, idx + count)
 }
 
-fetch(`${BasePath}dictionaries/english.json`).then(response => response.json()).then(json => {
-  dictionaryBackup = json
-  Object.keys(dictionaryBackup).filter((key) => key.length <= 2).forEach((key) => {
+let language = new URLSearchParams(window.location.search).get('language');
+language = ['english', 'french', 'both'].includes(language) ? language : 'english'
+
+fetch(`${BasePath}dictionaries/${language}.txt`).then(response => response.text()).then(text => {
+  loadDictionary(text)
+  dictionaryBackup.keys().filter((key) => key.length <= 2).forEach((key) => {
     delete dictionaryBackup[key]
   })
 })
+
+function loadDictionary(text) {
+	dictionaryBackup = new Set(text.split(/\s+/));
+}

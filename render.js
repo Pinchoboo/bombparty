@@ -46,7 +46,7 @@ function insert_game_html() {
 			<input type="text" id="alphabet_input" value="${DEFAULT_ALPHABET}" onchange='update_settings(this)'>
 			<br>
 			<label for="custom_dictionary_input">Custom dictionary (space separated words)</label>
-			<button disabled type="file" id="custom_dictionary_input" onchange='update_settings(this)'> Choose file</button>
+			<input type="file" id="custom_dictionary_input" onchange='update_settings(this)'>
 		`
 	}
 }
