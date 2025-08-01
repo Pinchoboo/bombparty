@@ -1,9 +1,11 @@
 const BasePath = location.protocol + '//' + location.host + location.pathname;
 let connections = {}
 let used = {}
-let dictionaryBackup = {}
-let dictionary = {}
+let dictionarySet = new Set()
+let dictionary = []
+let dictionary_index = 0
 let played = {}
+
 state = { players: {}, queue: {}, started: false, game: {}, settings: {
 	seconds: DEFAULT_SECONDS,
 	alphabet: DEFAULT_ALPHABET,
@@ -33,8 +35,7 @@ function update(label, type, data) {
     case MessageType.Submit:
       if (!state.started || state.game.order[state.game.turn] != label) { return }
       data = data.trim().toLowerCase()
-      if (dictionary[data] && !played[data] && data.includes(state.game.query)) {
-        delete dictionary[data]
+      if (dictionarySet.has(data) && !played[data] && data.includes(state.game.query)) {
         for (const letter of data) {
           if (letter in state.game.letters[label]) {
             state.game.letters[label][letter] = Math.max(0, state.game.letters[label][letter] - 1)
@@ -56,7 +57,6 @@ function update(label, type, data) {
     case MessageType.StartGameRequest:
       if (state.started) { return }
       state.started = true
-      dictionary = { ...dictionaryBackup }
       played = {}
       let order = Object.keys(state.queue)
       state.game = {
@@ -175,15 +175,20 @@ function removePlayerFromGame(label) {
 
 let word = ''
 function getQuery() {
-  let words = Object.keys(dictionary)
-  word = words[(Math.random() * words.length) | 0] || ''
+  for(let i=0; i < 100; i++){
+	word = dictionary[(dictionary_index++) % dictionary.length ]
+	if(!played[word]) {
+		break;
+	}
+  }
+	
   let count = 2
   if (Math.random() > 0.5) {
     count += 1
   }
   let idx = (Math.random() * (word.length - count + 1)) | 0
   debug(word)
-  return word.slice(idx, idx + count) || ''
+  return word.slice(idx, idx + count)
 }
 
 let language = new URLSearchParams(window.location.search).get('language');
@@ -191,11 +196,9 @@ language = ['english', 'french', 'both'].includes(language) ? language : 'englis
 
 fetch(`${BasePath}dictionaries/${language}.txt`).then(response => response.text()).then(text => {
   loadDictionary(text)
-  dictionaryBackup.keys().filter((key) => key.length <= 2).forEach((key) => {
-    delete dictionaryBackup[key]
-  })
 })
 
 function loadDictionary(text) {
-	dictionaryBackup = new Set(text.split(/\s+/));
+	dictionarySet = new Set(text.split(/\s+/))
+	dictionary = [...dictionarySet].sort(() => Math.random() - 0.5);
 }
