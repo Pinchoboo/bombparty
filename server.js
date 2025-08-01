@@ -1,4 +1,4 @@
-const BasePath = location.protocol + '//' + location.host + location.pathname;
+const BasePath = location.protocol + '//' + location.host + location.pathname.replaceAll(/index\.html/g,'');
 let connections = {}
 let used = {}
 let dictionarySet = new Set()
@@ -192,7 +192,7 @@ function getQuery() {
 }
 
 let language = new URLSearchParams(window.location.search).get('language');
-language = ['english', 'french', 'both'].includes(language) ? language : 'english'
+language = ['english', 'french'].includes(language) ? language : 'english'
 
 fetch(`${BasePath}dictionaries/${language}.txt`).then(response => response.text()).then(text => {
   loadDictionary(text)
