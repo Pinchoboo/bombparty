@@ -24,9 +24,6 @@ if(IS_HOST){
 	let script = document.createElement('script');
 	script.src = './server.js';
 	document.head.append(script)
-	script = document.createElement('script');
-	script.src = './host.js';
-	document.head.append(script)
 } else {
 	let script = document.createElement('script');
 	script.src = './join.js';

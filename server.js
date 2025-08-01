@@ -202,3 +202,9 @@ function loadDictionary(text) {
 	dictionarySet = new Set(text.split(/\s+/))
 	dictionary = [...dictionarySet].sort(() => Math.random() - 0.5);
 }
+
+{
+	let script = document.createElement('script');
+	script.src = './host.js';
+	document.head.append(script)
+}
