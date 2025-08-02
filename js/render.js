@@ -19,7 +19,7 @@ function insert_game_html() {
         <div id="bonus"></div>
         <span id="order"></span>
         <div id="buttons"></div>
-		<ul id="joining"></ul>
+		<div id="joining"></div>
     `;
     ['prompt', 'bonus', 'input', 'timer', 'order', 'joining', 'username', 'buttons', 'players'].forEach((x) => { elems[x] = document.getElementById(x) });
     timerLoop()
@@ -30,7 +30,7 @@ function insert_game_html() {
 		right_content.innerHTML = `
 			<h3>Settings</h3>
 			<label for="anyone_can_start_input">Anyone can start a game</label>
-			<input type="checkbox" id="anyone_can_start_input" value="${DEFAULT_ANYONE_CAN_START}" onchange='update_settings(this)'>
+			<input type="checkbox" id="anyone_can_start_input" ${DEFAULT_ANYONE_CAN_START ? 'checked' : ''} onchange='update_settings(this)'>
 			<br>
 			<label for="seconds_input">Seconds for each turn</label>
 			<input type="number" id="seconds_input" value="${DEFAULT_SECONDS}" onchange='update_settings(this)'>
@@ -45,7 +45,7 @@ function insert_game_html() {
 			<input type="file" id="custom_dictionary_input" onchange='update_settings(this)'>
 		`
 	}
-	togglePanel('left')
+	showPanels()
 }
 
 function render(state, label) {
@@ -129,17 +129,15 @@ function renderPlayers(state, label) {
     elems['players'].innerHTML = Object.keys(state.players).filter((other_label) => {
 		return label != other_label
 	}).map((label) => {
-        let name = x(state.players[label])
-        return `<li style="list-style:none">${name}</li>`
+        return `<div>${x(state.players[label])}</div>`
     }).join('')
 }
 
 function renderJoining(state){
-	elems['joining'].innerHTML = Object.keys(state.players).filter((label) => {
+	elems['joining'].innerHTML = '<br>' + Object.keys(state.players).filter((label) => {
 		return label in state.queue
 	}).map((label) => {
-        let name = x(state.players[label])
-        return `<li style="list-style:none">${name}</li>`
+        return `<div>${x(state.players[label])}</div>`
     }).join('')
 }
 
@@ -174,4 +172,17 @@ function togglePanel(id) {
 		document.getElementById('gear').classList.toggle('shift')
         center.classList.toggle('shift-right');
     }
+}
+
+
+function showPanels(){
+	setTimeout(() => {
+		togglePanel('left')
+		document.getElementById('gear').classList.add('shift')
+		document.getElementById('gear').classList.remove('hidden')
+		setTimeout(() => {
+			document.getElementById('person').classList.remove('hidden')
+			document.getElementById('gear').classList.remove('shift')
+		}, 300)
+	}, 100)
 }

@@ -16,6 +16,7 @@ state = { players: {}, queue: {}, started: false, game: {}, settings: {
 function update(label, type, data) {
   switch (type) {
     case MessageType.Rename:
+	  if(!data.name) { return }
       new_name = data.name?.substring(0, 20)
       if (Object.values(state.players).includes(new_name)) { return }
       state.players[label] = new_name
@@ -55,7 +56,7 @@ function update(label, type, data) {
       }
       break
     case MessageType.StartGameRequest:
-      if (state.started) { return }
+      if (state.started || (!state.settings.anyone_can_start && label != host)) { return }
       state.started = true
       played = {}
       let order = Object.keys(state.queue)

@@ -6,6 +6,10 @@ html, body {
 	font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
+.hidden {
+	display: none;
+}
+
 .container {
     display: flex;
     width: 100%;

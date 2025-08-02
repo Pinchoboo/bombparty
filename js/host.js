@@ -31,13 +31,13 @@ function sendStateUpdate() {
     }
 }
 
-insert_game_html()
-render(state, label)
 
 peer.on('open', (id) => {
 	onbeforeunload = (_) => { peer.destroy() }
     // display join url
     renderJoinUrl(`${BasePath}?id=${id}`)
+	insert_game_html()
+	render(state, label)
 
     peer.on('connection', function (conn) {
         conn.on('data', (data) => handleData(conn, data.type, data.data));

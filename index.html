@@ -12,8 +12,8 @@
 
 <body>
   <div class="container">
-	<h1 id="person" onclick="togglePanel('left')">&#129489;</h1>
-  	<h1 id="gear" onclick="togglePanel('right')">&#9881;&#65039;</h1>
+	<h1 id="person" class="hidden" onclick="togglePanel('left')">&#129489;</h1>
+  	<h1 id="gear" class="hidden" onclick="togglePanel('right')">&#9881;&#65039;</h1>
 	<div class="panel" id="left">
 		<h1 id="person2" onclick="togglePanel('left')">&#129489;</h1>
 		<br><br><br>
@@ -24,10 +24,10 @@
 		<div id="invite"></div>
 		<div id="left_content">
 			<h2>Other players in server:</h1>
-        	<ul id='players'></ul>
+        	<div id='players'></div>
 		</div>
 	</div>
-  	<game>Loading...</game>
+  	<game><h1>Loading...</h1></game>
   	<span class="panel" id="right">
 		<h1 id="gear2" onclick="togglePanel('right')">&#9881;&#65039;</h1>
 		<br><br>

@@ -5,12 +5,6 @@ body {
     zoom:135%; /* For Chrome, IE, default 100%*/
 }
 
-ul {
-    display: inline-block;
-    text-align: left;
-    list-style-position: inside;
-}
-
 #input {
     text-align: right;
 }
