@@ -1,5 +1,5 @@
 let elems = {}
-let renderstate = {}
+let renderstate = { input: { wrongCount: 0, turn: 0}}
 
 function x(s) {
     return String(s)
@@ -12,10 +12,8 @@ function x(s) {
 
 function insert_game_html() {
     document.getElementsByTagName('game')[0].innerHTML = `
-        <span id="prompt"></span>
-        <div style="display: grid; grid-auto-flow: column;">
-            <span id="input"></span><span id="timer"></span>
-        </div>
+        <span id="prompt"></span><span id="timer"></span>
+		<div id="input"></div>
         <div id="bonus"></div>
         <span id="order"></span>
         <div id="buttons"></div>
@@ -90,6 +88,16 @@ function renderInput(state, label) {
         textinput.value = state.game.typed
     }
     textinput.disabled = !isMyTurn;
+	if(state.game.wrongCount != renderstate.input.wrongCount){
+		renderstate.input.wrongCount = state.game.wrongCount
+		textinput.classList.remove('invalid')
+		setTimeout(() => textinput.classList.add('invalid'), 100)
+		
+	}
+	if(state.game.typed == '' || state.game.turn != renderstate.input.turn) {
+		renderstate.input.turn = state.game.turn;
+		textinput.classList.remove('invalid')
+	}
     if (isMyTurn && state.game.typed == '') { textinput.focus() }
 }
 

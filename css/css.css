@@ -5,10 +5,40 @@ body {
     zoom:135%; /* For Chrome, IE, default 100%*/
 }
 
-#input {
-    text-align: right;
+input[type="text"] {
+    padding: 10px 14px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
 }
 
-#timer {
-    text-align: left;
+input[type="text"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+input.invalid, input.invalid:focus {
+    animation: shake 0.3s ease-in-out, glowRed 1s ease-in-out;
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes glowRed {
+    0% { box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25); }
+    50% { box-shadow: 0 0 8px 4px rgba(220, 53, 69, 0.5); }
+    100% { box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25); }
 }
