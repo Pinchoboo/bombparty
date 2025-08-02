@@ -61,7 +61,7 @@ function update(label, type, data) {
 			}
 			break
 		case MessageType.StartGameRequest:
-			if (state.started || (!state.settings.anyone_can_start && label != host)) { return }
+			if (state.started || (!state.settings.anyone_can_start && label != 'host')) { return }
 			state.started = true
 			played = {}
 			let order = Object.keys(state.queue)
