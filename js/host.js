@@ -35,8 +35,8 @@ function sendStateUpdate() {
 peer.on('open', (id) => {
 	onbeforeunload = (_) => { peer.destroy() }
     // display join url
-    renderJoinUrl(`${BasePath}?id=${id}`)
-	insert_game_html()
+    insertJoinUrl(`${BasePath}?id=${id}`)
+	insertGameHtml()
 	render(state, label)
 
     peer.on('connection', function (conn) {

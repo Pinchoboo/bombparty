@@ -7,7 +7,7 @@ let last_server_message = null
 function handleData(data) {
     if (data.type == MessageType.Ping) { last_server_message = data.data; return conn.send(Pong(Date.now())) }
     if (data.type != MessageType.StateUpdate) { return debug(data) }
-    if (!state) { insert_game_html() }
+    if (!state) { insertGameHtml() }
     state = data.data.state;
     last_server_message = data.data.timestamp
     render(state, label)
