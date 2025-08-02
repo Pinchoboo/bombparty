@@ -205,6 +205,6 @@ function loadDictionary(text) {
 
 {
 	let script = document.createElement('script');
-	script.src = './host.js';
+	script.src = '/js/host.js';
 	document.head.append(script)
 }

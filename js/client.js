@@ -22,10 +22,10 @@ function debug(_) {}
 
 if(IS_HOST){
 	let script = document.createElement('script');
-	script.src = './server.js';
+	script.src = 'js/server.js';
 	document.head.append(script)
 } else {
 	let script = document.createElement('script');
-	script.src = './join.js';
+	script.src = '/js/join.js';
 	document.head.append(script)
 }

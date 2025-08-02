@@ -1,19 +1,39 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="css.css">
+  <link rel="stylesheet" href="css/panel.css">
+  <link rel="stylesheet" href="css/css.css">
   <script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
-  <script src="./constants.js"></script>
-  <script src="./messages.js"></script>
-  <script src="./render.js"></script>
-  <script src="./client.js" defer></script>
+  <script src="/js/constants.js"></script>
+  <script src="/js/messages.js"></script>
+  <script src="/js/render.js"></script>
+  <script src="/js/client.js" defer></script>
 </head>
 
 <body>
-  <span id="top_panel"></span>
-  <hr>
-  <game>Loading...</game>
-  <hr>
-  <span id="bottom_panel"></span>
+  <div class="container">
+	<h1 id="person" onclick="togglePanel('left')">&#129489;</h1>
+  	<h1 id="gear" onclick="togglePanel('right')">&#9881;&#65039;</h1>
+	<div class="panel" id="left">
+		<h1 id="person2" onclick="togglePanel('left')">&#129489;</h1>
+		<br><br><br>
+		<h3>Username:
+            <span id="username"></span>
+            <button type="button" onclick="changeName()">change</button>
+        </h3>
+		<div id="invite"></div>
+		<div id="left_content">
+			<h2>Other players in server:</h1>
+        	<ul id='players'></ul>
+		</div>
+	</div>
+  	<game>Loading...</game>
+  	<span class="panel" id="right">
+		<h1 id="gear2" onclick="togglePanel('right')">&#9881;&#65039;</h1>
+		<br><br>
+		<div id="right_content"> Work in progress</div>
+	</div>
+  </div>
 </body>
 
 </html>

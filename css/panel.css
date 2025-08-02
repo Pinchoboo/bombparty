@@ -1,0 +1,126 @@
+html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+	color: #DDE6F0;
+	font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+	background-color:#1A222C;
+}
+
+.panel {
+    width: 25%;
+    height: 100%;
+    transition: margin 0.3s ease;
+	transition-delay: 0s;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    z-index: 3;
+	background-color: #2A323D;
+}
+
+#left {
+    left: 0;
+    margin-left: -25%;
+}
+
+#right {
+    right: 0;
+    margin-right: -25%;
+}
+
+#left.open {
+    margin-left: 0;
+	transition: margin 0.3s ease;
+	transition-delay: 0.3s;
+}
+
+#right.open {
+    margin-right: 0;
+	transition: margin 0.3s ease;
+	transition-delay: 0.3s;
+}
+
+game {
+	margin-top: 10%;
+    margin-left: 0;
+    margin-right: 0;
+    transition: margin 0.3s ease;
+	transition-delay: 0.15s;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+game.shift-left {
+    margin-left: 25%;
+	transition: margin 0.3s ease;
+	transition-delay: 0.15s;
+}
+
+game.shift-right {
+    margin-right: 25%;
+	transition: margin 0.3s ease;
+	transition-delay: 0.15s;
+}
+
+#gear {
+    position: absolute;
+	top: 10px;
+    padding: 5px 10px;
+	right: 10px;
+	z-index: 2;
+	margin: 0;
+	transition: margin 0.3s ease;
+	transition-delay: 0.3s;
+}
+
+#person {
+	position: absolute;
+	top: 10px;
+    padding: 5px 10px;
+	left: 10px;
+	z-index: 2;
+	margin: 0;
+	transition: margin 0.3s ease;
+	transition-delay: 0.3s;
+}
+
+#person.shift {
+	transition: margin 0.3s ease;
+	margin-left: -25%;
+}
+
+#gear.shift {
+	transition: margin 0.3s ease;
+	margin-right: -25%;
+}
+
+#person2 {
+	margin-top: 0;
+	position: absolute;
+	top: 10px;
+    padding: 5px 10px;
+	right: 10px;
+	z-index: 4;
+}
+
+#gear2 {
+	margin-top: 0;
+	position: absolute;
+	top: 10px;
+    padding: 5px 10px;
+	left: 10px;
+	z-index: 4;
+}
