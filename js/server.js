@@ -4,6 +4,7 @@ let used = {}
 let dictionarySet = new Set()
 let dictionary = []
 let dictionary_index = 0
+let frequency = null
 let played = {}
 let syllables = null
 
@@ -12,7 +13,9 @@ state = {
 		seconds: DEFAULT_SECONDS,
 		alphabet: DEFAULT_ALPHABET,
 		lives: DEFAULT_LIVES,
-		anyone_can_start: DEFAULT_ANYONE_CAN_START
+		anyone_can_start: DEFAULT_ANYONE_CAN_START,
+		minrarity: DEFAULT_MINRARITY,
+		maxrarity: DEFAULT_MAXRARITY,
 	}
 }
 
@@ -63,6 +66,7 @@ function update(label, type, data) {
 		case MessageType.StartGameRequest:
 			if (state.started || (!state.settings.anyone_can_start && label != 'host')) { return }
 			state.started = true
+			selectWords()
 			played = {}
 			let order = Object.keys(state.queue)
 			state.game = {
@@ -100,11 +104,27 @@ async function update_settings(elem) {
 		case 'alphabet_input':
 			state.settings.alphabet = elem.value
 			break
+			// TODO REWORK FREQUENCY TO WORK WITH %
+		case 'minrarity_input':
+			state.settings.minrarity = Math.min(
+				99, 
+				state.settings.maxrarity - 1,
+				Math.max(0, Number(elem.value) || DEFAULT_MINRARITY)
+			)
+			break
+		case 'maxrarity_input':
+			state.settings.maxrarity = Math.max(
+				10,
+				state.settings.minrarity + 1,
+				Math.min(100, Number(elem.value) || DEFAULT_MAXRARITY)
+			)
+			break
 		case 'custom_dictionary_input':
-			loadDictionary(await elem.files.item(0).text())
+			return loadDictionary(await elem.files.item(0).text())
 			break
 		default: console.log('Error updating:', elem)
 	}
+	insertSettings()
 }
 
 
@@ -201,6 +221,7 @@ function getQuery() {
 				options.push(word.slice(i, i + 2));
 			}
 		}
+		debug(options)
 		return options[Math.floor(Math.random() * options.length)]
 	} else {
 		let count = 2
@@ -223,17 +244,33 @@ fetch(`${BasePath}dictionaries/${language}.txt`).then(response => response.text(
 
 function loadDictionary(dict, freq) {
 	dictionarySet = new Set(dict.split(/\s+/))
+	frequency = freq
+}
+
+function selectWords() {
 	dictionary = [...dictionarySet]
 	syllables = null;
-	if (freq) {
-		syllables = new Set()
-		for (const am of freq) {
-			if (am[0] < DEFAULT_MINFREQUENCY) {
-				continue
-			}
-			am[1].forEach(value => syllables.add(value));
+	if (frequency) {
+		let query_count = 0
+		for (const am of frequency) {
+			query_count += am[1].length * am[0]
 		}
-		dictionary.filter((word) => {
+		
+		min_skip = Math.floor(((100 - state.settings.minrarity) * query_count)/100.0)
+		max_skip = Math.floor(((100 - state.settings.maxrarity) * query_count)/100.0)
+		syllables = new Set()
+		for (const group of frequency) {
+			for(const elem of group[1]){
+				max_skip -= group[0]
+				min_skip -= group[0]
+				if(max_skip <= 0){
+					if(min_skip >= 0 || syllables.size == 0){
+						syllables.add(elem)
+					}
+				}
+			}
+		}
+		dictionary = dictionary.filter((word) => {
 			for (let i = 0; i < word.length - 2; i++) {
 				if (syllables.has(word.slice(i, i + 3))) {
 					return true;
@@ -247,7 +284,7 @@ function loadDictionary(dict, freq) {
 			return false;
 		})
 	}
-	dictionary = [...dictionarySet].sort(() => Math.random() - 0.5);
+	dictionary.sort(() => Math.random() - 0.5);
 }
 
 {

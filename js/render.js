@@ -35,16 +35,21 @@ function insertSettings() {
 		right_content.innerHTML = `
 			<h3>Settings</h3>
 			<label for="anyone_can_start_input">Anyone can start a game</label>
-			<input type="checkbox" id="anyone_can_start_input" ${DEFAULT_ANYONE_CAN_START ? 'checked' : ''} onchange='update_settings(this)'>
+			<input type="checkbox" id="anyone_can_start_input" ${state.settings.anyone_can_start ? 'checked' : ''} onchange='update_settings(this)'>
 			<br>
 			<label for="seconds_input">Seconds for each turn</label>
-			<input type="number" id="seconds_input" value="${DEFAULT_SECONDS}" onchange='update_settings(this)'>
+			<input type="number" id="seconds_input" value="${state.settings.seconds}" onchange='update_settings(this)'>
 			<br>
 			<label for="lives_input">Lives at start of game</label>
-			<input type="number" id="lives_input" value="${DEFAULT_LIVES}" onchange='update_settings(this)'>
+			<input type="number" id="lives_input" value="${state.settings.lives}" onchange='update_settings(this)'>
+			<br>
+			<label for="minrarity_input">Minimum query rarity (0-99%)</label>
+			<input type="number" id="minrarity_input" value="${state.settings.minrarity}" onchange='update_settings(this)'>
+			<label for="maxrarity_input">Maximum query rarity (10-100%)</label>
+			<input type="number" id="maxrarity_input" value="${state.settings.maxrarity}" onchange='update_settings(this)'>
 			<br>
 			<label for="alphabet_input">Custom alphabet (empty is none)</label>
-			<input type="text" id="alphabet_input" value="${DEFAULT_ALPHABET}" onchange='update_settings(this)'>
+			<input type="text" id="alphabet_input" value="${state.settings.alphabet}" onchange='update_settings(this)'>
 			<br>
 			<label for="custom_dictionary_input">Custom dictionary (space separated words)</label>
 			<label class="file-label">
