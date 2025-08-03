@@ -266,7 +266,7 @@ function getQuery() {
 }
 
 let language = new URLSearchParams(window.location.search).get('language');
-language = ['english', 'french'].includes(language) ? language : 'english'
+language = ['english', 'french', 'dutch'].includes(language) ? language : 'english'
 
 fetch(`${BasePath}dictionaries/${language}.txt`).then(response => response.text()).then(dict => {
 	fetch(`${BasePath}dictionaries/${language}.freq.json`).then(response => response.json()).then(freq => {
