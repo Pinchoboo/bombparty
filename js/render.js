@@ -38,22 +38,29 @@ function insertSettings() {
 			<input type="checkbox" id="anyone_can_start_input" ${state.settings.anyone_can_start ? 'checked' : ''} onchange='update_settings(this)'>
 			<br>
 			<label for="seconds_input">Seconds for each turn</label>
-			<input type="number" id="seconds_input" value="${state.settings.seconds}" onchange='update_settings(this)'>
+			<br>
+			<input type="number" id="seconds_input" value="${state.settings.seconds}" class='setting' onchange='update_settings(this)'>
 			<br>
 			<label for="lives_input">Lives at start of game</label>
-			<input type="number" id="lives_input" value="${state.settings.lives}" onchange='update_settings(this)'>
+			<br>
+			<input type="number" id="lives_input" value="${state.settings.lives}" class='setting' onchange='update_settings(this)'>
 			<br>
 			<label for="minrarity_input">Minimum query rarity (0-99%)</label>
-			<input type="number" id="minrarity_input" value="${state.settings.minrarity}" onchange='update_settings(this)'>
+			<br>
+			<input type="number" id="minrarity_input" value="${state.settings.minrarity}" class='setting' onchange='update_settings(this)'>
+			<br>
 			<label for="maxrarity_input">Maximum query rarity (10-100%)</label>
-			<input type="number" id="maxrarity_input" value="${state.settings.maxrarity}" onchange='update_settings(this)'>
+			<br>
+			<input type="number" id="maxrarity_input" value="${state.settings.maxrarity}" class='setting' onchange='update_settings(this)'>
 			<br>
 			<label for="alphabet_input">Custom alphabet (empty is none)</label>
-			<input type="text" id="alphabet_input" value="${state.settings.alphabet}" onchange='update_settings(this)'>
+			<br>
+			<input type="text" id="alphabet_input" value="${state.settings.alphabet}" class='setting' onchange='update_settings(this)'>
 			<br>
 			<label for="custom_dictionary_input">Custom dictionary (space separated words)</label>
+			<br>
 			<label class="file-label">
-				<input type="file" id="custom_dictionary_input" class="file-input" onchange="update_settings(this)">
+				<input type="file" id="custom_dictionary_input" class="file-input setting" onchange="update_settings(this)">
 				Choose File
 			</label>
 		`
@@ -65,7 +72,8 @@ function render(state, label) {
 	elems['buttons'].innerHTML = `
         ${label in state.queue ? '<button type="button" onclick="leaveGame()">Leave game</button>' : '<button type="button" onclick="enterGame()">Join next game</button>'}
     `
-	renderPlayers(state, label)
+	renderPlayers(state, label);
+	[...document.getElementsByClassName('setting')].forEach((x) => { x.disabled = state.started});
 
 	if (!state.started) {
 		['prompt', 'bonus', 'input', 'timer', 'order'].forEach((x) => elems[x].innerHTML = '');
