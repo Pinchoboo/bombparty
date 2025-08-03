@@ -24,46 +24,59 @@ function insertGameHtml() {
 		<div id="joining"></div>
     `;
 	['prompt', 'bonus', 'input', 'timer', 'order', 'joining', 'username', 'buttons', 'players'].forEach((x) => { elems[x] = document.getElementById(x) });
-	insertSettings()
+	if (IS_HOST) { renderSettings() }
 	enablePanels()
 	timerLoop()
 }
 
-function insertSettings() {
-	if (IS_HOST) {
-		let right_content = document.getElementById('right_content')
-		right_content.innerHTML = `
-			<h3>Settings</h3>
+function renderSettings() {
+	let right_content = document.getElementById('right_content')
+	right_content.innerHTML = `
+			<h3>Instant settings</h3>
 			<label for="anyone_can_start_input">Anyone can start a game</label>
-			<input type="checkbox" id="anyone_can_start_input" ${state.settings.anyone_can_start ? 'checked' : ''} onchange='update_settings(this)'>
+			<input type="checkbox" id="anyone_can_start_input" ${state.settings.anyone_can_start ? 'checked' : ''} class='setting' onchange='update_settings(this)'>
 			<br>
+			<label for="shortening_timer_input">Shorten timer on correct answers</label>
+			<input type="checkbox" id="shortening_timer_input" ${state.settings.shortening_timer ? 'checked' : ''} class='setting' onchange='update_settings(this)'>
+			<br>
+			<h3>Game load settings</h3>
 			<label for="seconds_input">Seconds for each turn</label>
 			<br>
-			<input type="number" id="seconds_input" value="${state.settings.seconds}" class='setting' onchange='update_settings(this)'>
+			<input type="number" id="seconds_input" value="${state.settings.seconds}" class='setting game-load' onchange='update_settings(this)'>
 			<br>
 			<label for="lives_input">Lives at start of game</label>
 			<br>
-			<input type="number" id="lives_input" value="${state.settings.lives}" class='setting' onchange='update_settings(this)'>
+			<input type="number" id="lives_input" value="${state.settings.lives}" class='setting game-load' onchange='update_settings(this)'>
 			<br>
 			<label for="minrarity_input">Minimum query rarity (0-99%)</label>
 			<br>
-			<input type="number" id="minrarity_input" value="${state.settings.minrarity}" class='setting' onchange='update_settings(this)'>
+			<input type="number" id="minrarity_input" value="${state.settings.minrarity}" class='setting game-load' onchange='update_settings(this)'>
 			<br>
 			<label for="maxrarity_input">Maximum query rarity (10-100%)</label>
 			<br>
-			<input type="number" id="maxrarity_input" value="${state.settings.maxrarity}" class='setting' onchange='update_settings(this)'>
+			<input type="number" id="maxrarity_input" value="${state.settings.maxrarity}" class='setting game-load' onchange='update_settings(this)'>
 			<br>
 			<label for="alphabet_input">Custom alphabet (empty is none)</label>
 			<br>
-			<input type="text" id="alphabet_input" value="${state.settings.alphabet}" class='setting' onchange='update_settings(this)'>
+			<input type="text" id="alphabet_input" value="${state.settings.alphabet}" class='setting game-load' onchange='update_settings(this)'>
+			<br>
+			<label for="share_alphabet_input">Share alphabet</label>
+			<input type="checkbox" id="share_alphabet_input" ${state.settings.share_alphabet ? 'checked' : ''} class='setting game-load' onchange='update_settings(this)'>
+			<br>
+			<label for="share_alphabet_lives_input">Share bonus lives</label>
+			<input type="checkbox" id="share_alphabet_lives_input" ${state.settings.share_alphabet_lives ? 'checked' : ''} class='setting game-load' onchange='update_settings(this)'>
 			<br>
 			<label for="custom_dictionary_input">Custom dictionary (space separated words)</label>
 			<br>
 			<label class="file-label">
-				<input type="file" id="custom_dictionary_input" class="file-input setting" onchange="update_settings(this)">
+				<input type="file" id="custom_dictionary_input" class="file-input setting game-load" onchange="update_settings(this)">
 				Choose File
 			</label>
 		`
+	if(IS_HOST){
+		[...document.getElementsByClassName('game-load')].forEach((x) => { x.disabled = state.started});
+	}else{
+		[...document.getElementsByClassName('setting')].forEach((x) => { x.disabled = true });
 	}
 }
 
@@ -73,7 +86,8 @@ function render(state, label) {
         ${label in state.queue ? '<button type="button" onclick="leaveGame()">Leave game</button>' : '<button type="button" onclick="enterGame()">Join next game</button>'}
     `
 	renderPlayers(state, label);
-	[...document.getElementsByClassName('setting')].forEach((x) => { x.disabled = state.started});
+	renderSettings();
+	
 
 	if (!state.started) {
 		['prompt', 'bonus', 'input', 'timer', 'order'].forEach((x) => elems[x].innerHTML = '');

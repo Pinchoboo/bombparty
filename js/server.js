@@ -10,12 +10,15 @@ let syllables = null
 
 state = {
 	players: {}, queue: {}, started: false, game: {}, settings: {
+		anyone_can_start: DEFAULT_ANYONE_CAN_START,
+		shortening_timer: DEFAULT_SHORTENING_TIMER,
 		seconds: DEFAULT_SECONDS,
 		alphabet: DEFAULT_ALPHABET,
 		lives: DEFAULT_LIVES,
-		anyone_can_start: DEFAULT_ANYONE_CAN_START,
 		minrarity: DEFAULT_MINRARITY,
 		maxrarity: DEFAULT_MAXRARITY,
+		share_alphabet: DEFAULT_SHARE_ALPHABET,
+		share_alphabet_lives: DEFAULT_SHARE_ALPHABET_LIVES
 	}
 }
 
@@ -48,14 +51,23 @@ function update(label, type, data) {
 						state.game.letters[label][letter] = Math.max(0, state.game.letters[label][letter] - 1)
 					}
 				}
+				
 				if (Object.values(state.game.letters[label]).every(v => v == 0)) {
 					if (Object.keys(state.game.letters[label]).length != 0) {
-						state.game.lives[label] += 1
+						if(state.settings.share_alphabet_lives){
+							state.game.order.forEach(l => { state.game.lives[l] += 1 });
+						}else{
+							state.game.lives[label] += 1
+						}
 					}
 					state.game.letters[label] = alphabetSet();
 				}
-
+				if(state.settings.share_alphabet){
+					state.game.order.forEach(l => { state.game.letters[l] = state.game.letters[label] });
+				}
+				
 				played[data] = true
+				if(state.settings.shortening_timer) { state.game.timers[label] = Math.max(5, state.game.timers[label] - 1) }
 				state.game.lastSolve[label] = data
 				state.game.turn = (state.game.turn + 1) % state.game.order.length
 				startTurn()
@@ -74,12 +86,13 @@ function update(label, type, data) {
 				order: order,
 				turn: 0,
 				query: getQuery(),
-				deadline: deadline(),
 				wrongCount: 0,
 				lives: Object.fromEntries(order.map((id) => [id, state.settings.lives])),
 				letters: Object.fromEntries(order.map((id) => [id, alphabetSet()])),
-				lastSolve: Object.fromEntries(order.map((id) => [id, '']))
+				lastSolve: Object.fromEntries(order.map((id) => [id, ''])),
+				timers: Object.fromEntries(order.map((id) => [id, state.settings.seconds]))
 			}
+			state.game.deadline = deadline();
 			break
 		default:
 			console.log(['NOT FOUND', label, type, data])
@@ -89,11 +102,20 @@ function update(label, type, data) {
 }
 
 async function update_settings(elem) {
+	if(state.started){ return }
 	elem = document.getElementById(elem.id)
 	switch (elem.id) {
 		case 'anyone_can_start_input':
 			state.settings.anyone_can_start = elem.checked
-			sendStateUpdate()
+			break
+		case 'shortening_timer_input':
+			state.settings.shortening_timer = elem.checked
+			break
+		case 'share_alphabet_input':
+			state.settings.share_alphabet = elem.checked
+			break
+		case 'share_alphabet_lives_input':
+			state.settings.share_alphabet_lives = elem.checked
 			break
 		case 'seconds_input':
 			state.settings.seconds = Number(elem.value)
@@ -129,7 +151,7 @@ async function update_settings(elem) {
 			break
 		default: console.log('Error updating:', elem)
 	}
-	insertSettings()
+	sendStateUpdate()
 }
 
 
@@ -150,7 +172,7 @@ function startTurn() {
 }
 
 function deadline() {
-	let d = (state.settings.seconds * 1000)
+	let d = (state.game.timers[state.game.order[state.game.turn]] * 1000) || 1
 	deadlineTimeout(d + 500)
 	return Date.now() + d
 }
@@ -171,13 +193,16 @@ function deadlineTimeout(delay) {
 		if (state.started && state.game?.deadline && (state.game.deadline < Date.now())) {
 			let deadline_label = state.game.order[state.game.turn]
 			state.game.lastSolve[deadline_label] = String.fromCodePoint(55357) + String.fromCodePoint(56468) + `(${word})`
+			state.game.timers[deadline_label] = state.settings.seconds
 			state.game.lives[deadline_label] -= 1
 			if (state.game.lives[deadline_label] < 1) {
 				removePlayerFromGame(deadline_label)
 			} else {
 				state.game.turn = (state.game.turn + 1) % state.game.order.length
 			}
-			startTurn()
+			if(state.started){
+				startTurn()
+			}
 			sendStateUpdate()
 		}
 	}, delay);
@@ -203,6 +228,8 @@ function removePlayerFromGame(label) {
 
 	delete state.game.lives[label]
 	delete state.game.letters[label]
+	delete state.game.timers[label]
+	delete state.game.lastSolve[label]
 }
 
 let word = ''

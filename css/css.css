@@ -143,6 +143,17 @@ input[type="file"]:disabled,
 .file-label:disabled,
 .file-label:hover:disabled,
 .file-label:active:disabled {
-    background-color: #aaa;
+    background-color: #aaaaaa70;
+    cursor: not-allowed;
+}
+
+input[type="checkbox"]:disabled {
+    background-color: #ffffff70;
+    cursor: not-allowed;
+}
+
+input[type="checkbox"]:checked:disabled {
+    background-color: #007bff70;
+    border-color: #007bff70;
     cursor: not-allowed;
 }

@@ -13,6 +13,10 @@ function handleData(data) {
     render(state, label)
 }
 
+function update_settings(elem) {
+	console.log('not yet inplemented', elem)
+}
+
 peer.on('open', (id) => {
 	onbeforeunload = (_) => { peer.destroy() }
 
