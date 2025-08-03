@@ -83,20 +83,18 @@ function renderSettings() {
 function render(state, label) {
 	elems['username'].innerHTML = x(state.players[label])
 	elems['buttons'].innerHTML = `
-        ${label in state.queue ? '<button type="button" onclick="leaveGame()">Leave game</button>' : '<button type="button" onclick="enterGame()">Join next game</button>'}
+        ${label in state.queue ? `<button type="button" onclick="leaveGame()">${state?.game?.order?.includes(label) ? 'Leave game' : 'Leave queue'}</button>` : '<button type="button" onclick="enterGame()">Join next game</button>'}
     `
 	renderPlayers(state, label);
 	renderSettings();
-	
 
 	if (!state.started) {
 		['prompt', 'bonus', 'input', 'timer', 'order'].forEach((x) => elems[x].innerHTML = '');
-
 		if (label in state.queue || (IS_HOST && Object.keys(state.queue).length > 0)) {
 			if (state.settings.anyone_can_start || IS_HOST) {
-				elems['buttons'].innerHTML = '<button onclick="startGame()">Start Game</button>' + elems['buttons'].innerHTML
+				elems['buttons'].innerHTML+= '<button onclick="startGame()">Start game</button>'
 			} else {
-				elems['buttons'].innerHTML = '<button disabled>Waiting for host to start</button>' + elems['buttons'].innerHTML
+				elems['buttons'].innerHTML+= '<button disabled>Waiting for host to start</button>'
 			}
 		}
 		renderJoining(state)
