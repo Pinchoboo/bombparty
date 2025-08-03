@@ -3,4 +3,4 @@ const DEFAULT_SECONDS = 15;
 const DEFAULT_LIVES = 3;
 const DEFAULT_ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 const DEFAULT_MINRARITY = 0
-const DEFAULT_MAXRARITY = 55
+const DEFAULT_MAXRARITY = 60

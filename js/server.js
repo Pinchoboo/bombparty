@@ -60,7 +60,7 @@ function update(label, type, data) {
 				state.game.turn = (state.game.turn + 1) % state.game.order.length
 				startTurn()
 			} else {
-				state.game.wrongCount+=1;
+				state.game.wrongCount += 1;
 			}
 			break
 		case MessageType.StartGameRequest:
@@ -104,19 +104,24 @@ async function update_settings(elem) {
 		case 'alphabet_input':
 			state.settings.alphabet = elem.value
 			break
-			// TODO REWORK FREQUENCY TO WORK WITH %
 		case 'minrarity_input':
 			state.settings.minrarity = Math.min(
-				99, 
-				state.settings.maxrarity - 1,
+				99,
 				Math.max(0, Number(elem.value) || DEFAULT_MINRARITY)
+			)
+			state.settings.maxrarity = Math.max(
+				state.settings.maxrarity,
+				state.settings.minrarity + 1,
 			)
 			break
 		case 'maxrarity_input':
 			state.settings.maxrarity = Math.max(
 				10,
-				state.settings.minrarity + 1,
 				Math.min(100, Number(elem.value) || DEFAULT_MAXRARITY)
+			)
+			state.settings.minrarity = Math.min(
+				state.settings.minrarity,
+				state.settings.maxrarity - 1,
 			)
 			break
 		case 'custom_dictionary_input':
@@ -208,7 +213,7 @@ function getQuery() {
 			break;
 		}
 	}
-	debug(word)
+	
 	if (syllables) {
 		let options = []
 		for (let i = 0; i < word.length - 2; i++) {
@@ -221,7 +226,7 @@ function getQuery() {
 				options.push(word.slice(i, i + 2));
 			}
 		}
-		debug(options)
+		debug('Choose word:',word, '; syllable options:', options)
 		return options[Math.floor(Math.random() * options.length)]
 	} else {
 		let count = 2
@@ -250,41 +255,72 @@ function loadDictionary(dict, freq) {
 function selectWords() {
 	dictionary = [...dictionarySet]
 	syllables = null;
-	if (frequency) {
-		let query_count = 0
-		for (const am of frequency) {
-			query_count += am[1].length * am[0]
-		}
-		
-		min_skip = Math.floor(((100 - state.settings.minrarity) * query_count)/100.0)
-		max_skip = Math.floor(((100 - state.settings.maxrarity) * query_count)/100.0)
-		syllables = new Set()
-		for (const group of frequency) {
-			for(const elem of group[1]){
-				max_skip -= group[0]
-				min_skip -= group[0]
-				if(max_skip <= 0){
-					if(min_skip >= 0 || syllables.size == 0){
-						syllables.add(elem)
-					}
-				}
-			}
-		}
-		dictionary = dictionary.filter((word) => {
-			for (let i = 0; i < word.length - 2; i++) {
-				if (syllables.has(word.slice(i, i + 3))) {
-					return true;
-				}
-			}
-			for (let i = 0; i < word.length - 1; i++) {
-				if (syllables.has(word.slice(i, i + 2))) {
-					return true;
-				}
-			}
-			return false;
-		})
+	if (!frequency) {
+		frequency = calculateFrequency(dictionary)
 	}
+	let query_count = 0
+	for (const am of frequency) {
+		query_count += am[1].length * Math.ceil(Math.log2(am[0]))
+	}
+
+	min_skip = Math.ceil(((100 - state.settings.minrarity) * query_count) / 100.0)
+	max_skip = Math.ceil(((100 - state.settings.maxrarity) * query_count) / 100.0)
+	syllables = new Set()
+	outer: for (const group of frequency) {
+		let log_freq = Math.ceil(Math.log2(group[0]));
+		for (const elem of group[1]) {
+			max_skip -= log_freq
+			min_skip -= log_freq
+			if (max_skip <= 0) {
+				if(syllables.size == 0) {
+					debug('Rarest syllable frequency included:', group)
+				}
+				if (min_skip >= 0 || syllables.size == 0) {
+					syllables.add(elem)
+				} else {
+					debug('Most common syllable frequency excluded:', group)
+					break outer;
+				}
+			}
+		}
+	}
+	dictionary = dictionary.filter((word) => {
+		for (let i = 0; i < word.length - 2; i++) {
+			if (syllables.has(word.slice(i, i + 3))) {
+				return true;
+			}
+		}
+		for (let i = 0; i < word.length - 1; i++) {
+			if (syllables.has(word.slice(i, i + 2))) {
+				return true;
+			}
+		}
+		return false;
+	})
+
 	dictionary.sort(() => Math.random() - 0.5);
+}
+
+function calculateFrequency(dictionary){
+	let data = {}
+	for(const word of dictionary){
+		let syllables = new Set()
+		for(let i = 0; i < word.length - 2; i++){
+			syllables.add(word.slice(i, i+3))
+		}
+		for(let i = 0; i < word.length - 1; i++){
+			syllables.add(word.slice(i, i+2))
+		}
+		for(const syllable of [...syllables]){
+			data[syllable] = (data[syllable] || 0) + 1
+		}
+	}
+	let freq = {}
+	for (const [key, value] of Object.entries(data)) {
+		freq[value] = (freq[value] || [])
+		freq[value].push(key) 
+	}
+	return Object.entries(freq).map((e) => [Number(e[0]), e[1]])
 }
 
 {
