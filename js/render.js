@@ -83,7 +83,7 @@ function renderSettings() {
 function render(state, label) {
 	elems['username'].innerHTML = x(state.players[label])
 	elems['buttons'].innerHTML = `
-        ${label in state.queue ? `<button type="button" onclick="leaveGame()">${state?.game?.order?.includes(label) ? 'Leave game' : 'Leave queue'}</button>` : '<button type="button" onclick="enterGame()">Join next game</button>'}
+        ${label in state.queue ? `<button type="button" onclick="leaveGame()">${state?.game?.order?.includes(label) ? 'Leave game' : 'Leave queue'}</button>` : '<button type="button" onclick="enterGame()">Join next game queue</button>'}
     `
 	renderPlayers(state, label);
 	renderSettings();
@@ -140,6 +140,10 @@ function renderPrompt(state) {
 }
 
 function renderBonus(state, label) {
+	if (state.settings.share_alphabet) {
+		label = state.game.order[0]
+	}
+
 	if (state.game.order.includes(label)) {
 		let letters_to_use = ''
 		for (const [key, value] of Object.entries(state.game.letters[label])) {

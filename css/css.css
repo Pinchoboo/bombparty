@@ -145,6 +145,7 @@ input[type="file"]:disabled,
 .file-label:active:disabled {
     background-color: #aaaaaa70;
     cursor: not-allowed;
+	color: #dde6f0;
 }
 
 input[type="checkbox"]:disabled {
