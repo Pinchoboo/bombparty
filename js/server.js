@@ -45,7 +45,7 @@ function update(label, type, data) {
 			break
 		case MessageType.Submit:
 			if (!state.started || state.game.order[state.game.turn] != label) { return }
-			data = data.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+			data = data.trim().normalize('NFD').replace(/n[\u0300-\u036f]/gi, 'nn').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 			if (dictionarySet.has(data) && !played[data] && data.includes(state.game.query)) {
 				for (const letter of data) {
 					if (letter in state.game.letters[label]) {
