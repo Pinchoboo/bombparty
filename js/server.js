@@ -148,8 +148,9 @@ async function update_settings(elem) {
 			)
 			break
 		case 'custom_dictionary_input':
+			state.settings.dictionary = '...'
+			render(state, label)
 			return loadDictionary(await elem.files.item(0).text())
-			break
 		default: console.log('Error updating:', elem)
 	}
 	sendStateUpdate()
@@ -267,16 +268,21 @@ function getQuery() {
 }
 
 function loadDefaultDictionary(language, no_update) {
+	
 	language = ['english', 'spanish', 'french', 'dutch'].includes(language) ? language : 'english'
-	fetch(`${BasePath}dictionaries/${language}.txt`).then(response => response.text()).then(dict => {
-		fetch(`${BasePath}dictionaries/${language}.freq.json`).then(response => response.json()).then(freq => {
-			dictionarySet = new Set(dict.split(/\s+/))
-			frequency = freq
-			state.settings.dictionary = language
-			if(!no_update){
-				sendStateUpdate()
-			}
-		})
+	if(language == state.settings.dictionary) { return }
+	state.settings.dictionary = '...'
+	render(state, label)
+	Promise.all([
+		fetch(`${BasePath}dictionaries/${language}.txt`).then(res => res.text()),
+		fetch(`${BasePath}dictionaries/${language}.freq.json`).then(res => res.json())
+	]).then(([dict, freq]) => {
+		dictionarySet = new Set(dict.split(/\s+/))
+		frequency = freq
+		state.settings.dictionary = language
+		if (!no_update) {
+			sendStateUpdate()
+		}
 	})
 }
 let language = new URLSearchParams(window.location.search).get('language');
