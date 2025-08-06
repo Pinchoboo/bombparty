@@ -69,10 +69,10 @@ function renderSettings() {
 			<h3>Dictionary: ${state.settings.dictionary}
 			${ !IS_HOST ? `` : 
 			`<br>
-			<span class="flag" onclick="loadDefaultDictionary('english');">&#x1f1fa;&#x1f1f8;</span>&nbsp;
-			<span class="flag" onclick="loadDefaultDictionary('spanish');">&#x1f1ea;&#x1f1f8;</span>&nbsp;
-			<span class="flag" onclick="loadDefaultDictionary('dutch')  ;">&#x1f1f3;&#x1f1f1;</span>&nbsp;
-			<span class="flag" onclick="loadDefaultDictionary('french') ;">&#x1f1eb;&#x1f1f7;</span>&nbsp;
+			<span class="flag" ${state.settings.dictionary == '...' ? '' : `onclick="loadDefaultDictionary('english')`};">&#x1f1fa;&#x1f1f8;</span>&nbsp;
+			<span class="flag" ${state.settings.dictionary == '...' ? '' : `onclick="loadDefaultDictionary('spanish')`};">&#x1f1ea;&#x1f1f8;</span>&nbsp;
+			<span class="flag" ${state.settings.dictionary == '...' ? '' : `onclick="loadDefaultDictionary('dutch')`};">&#x1f1f3;&#x1f1f1;</span>&nbsp;
+			<span class="flag" ${state.settings.dictionary == '...' ? '' : `onclick="loadDefaultDictionary('french')`};">&#x1f1eb;&#x1f1f7;</span>&nbsp;
 			</h3>
 			<label for="custom_dictionary_input">Custom dictionary (space separated words)</label>
 			<br>

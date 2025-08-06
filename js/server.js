@@ -272,7 +272,9 @@ function loadDefaultDictionary(language, no_update) {
 	language = ['english', 'spanish', 'french', 'dutch'].includes(language) ? language : 'english'
 	if(language == state.settings.dictionary) { return }
 	state.settings.dictionary = '...'
-	render(state, label)
+	if (!no_update) {
+		render(state, label)
+	}
 	Promise.all([
 		fetch(`${BasePath}dictionaries/${language}.txt`).then(res => res.text()),
 		fetch(`${BasePath}dictionaries/${language}.freq.json`).then(res => res.json())
