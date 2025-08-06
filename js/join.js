@@ -14,7 +14,7 @@ function handleData(data) {
 }
 
 function update_settings(elem) {
-	console.log('not yet inplemented', elem)
+	console.log('not yet implemented', elem)
 }
 
 peer.on('open', (id) => {
