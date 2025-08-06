@@ -1,13 +1,9 @@
 const fs = require('fs');
 
-file = 'dutch'
+file = 'spanish'
 
 const data = {};
-let itt = 0;
 for(const word of [...new Set(fs.readFileSync(`./${file}.txt`, 'utf8').split(/\s+/))]){
-	if(itt++%(2731) == 0){
-		console.log(itt/273154, word)
-	}
 	let syllables = new Set()
 	for(let i = 0; i < word.length - 2; i++){
 		syllables.add(word.slice(i, i+3))

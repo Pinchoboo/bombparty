@@ -66,12 +66,21 @@ function renderSettings() {
 			<label for="share_alphabet_lives_input">Share bonus lives</label>
 			<input type="checkbox" id="share_alphabet_lives_input" ${state.settings.share_alphabet_lives ? 'checked' : ''} class='setting game-load' onchange='update_settings(this)'>
 			<br>
+			<h3>Dictionary: ${state.settings.dictionary}
+			${ !IS_HOST ? `` : 
+			`<br>
+			<span class="flag" onclick="loadDefaultDictionary('english');">&#x1f1fa;&#x1f1f8;</span>&nbsp;
+			<span class="flag" onclick="loadDefaultDictionary('spanish');">&#x1f1ea;&#x1f1f8;</span>&nbsp;
+			<span class="flag" onclick="loadDefaultDictionary('dutch')  ;">&#x1f1f3;&#x1f1f1;</span>&nbsp;
+			<span class="flag" onclick="loadDefaultDictionary('french') ;">&#x1f1eb;&#x1f1f7;</span>&nbsp;
+			</h3>
 			<label for="custom_dictionary_input">Custom dictionary (space separated words)</label>
 			<br>
 			<label class="file-label">
 				<input type="file" id="custom_dictionary_input" class="file-input setting game-load" onchange="update_settings(this)">
 				Choose File
-			</label>
+			</label>`
+			}
 		`
 	if(IS_HOST){
 		[...document.getElementsByClassName('game-load')].forEach((x) => { x.disabled = state.started});

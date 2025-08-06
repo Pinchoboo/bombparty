@@ -18,7 +18,8 @@ state = {
 		minrarity: DEFAULT_MINRARITY,
 		maxrarity: DEFAULT_MAXRARITY,
 		share_alphabet: DEFAULT_SHARE_ALPHABET,
-		share_alphabet_lives: DEFAULT_SHARE_ALPHABET_LIVES
+		share_alphabet_lives: DEFAULT_SHARE_ALPHABET_LIVES,
+		dictionary: ''
 	}
 }
 
@@ -265,18 +266,27 @@ function getQuery() {
 	}
 }
 
-let language = new URLSearchParams(window.location.search).get('language');
-language = ['english', 'french', 'dutch'].includes(language) ? language : 'english'
-
-fetch(`${BasePath}dictionaries/${language}.txt`).then(response => response.text()).then(dict => {
-	fetch(`${BasePath}dictionaries/${language}.freq.json`).then(response => response.json()).then(freq => {
-		loadDictionary(dict, freq)
+function loadDefaultDictionary(language, no_update) {
+	language = ['english', 'spanish', 'french', 'dutch'].includes(language) ? language : 'english'
+	fetch(`${BasePath}dictionaries/${language}.txt`).then(response => response.text()).then(dict => {
+		fetch(`${BasePath}dictionaries/${language}.freq.json`).then(response => response.json()).then(freq => {
+			dictionarySet = new Set(dict.split(/\s+/))
+			frequency = freq
+			state.settings.dictionary = language
+			if(!no_update){
+				sendStateUpdate()
+			}
+		})
 	})
-})
+}
+let language = new URLSearchParams(window.location.search).get('language');
+loadDefaultDictionary(language, true)
 
 function loadDictionary(dict, freq) {
 	dictionarySet = new Set(dict.split(/\s+/))
 	frequency = freq
+	state.settings.dictionary = 'custom'
+	sendStateUpdate()
 }
 
 function selectWords() {
