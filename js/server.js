@@ -2,6 +2,7 @@ const BasePath = location.protocol + '//' + location.host + location.pathname.re
 let connections = {}
 let used = {}
 let dictionarySet = new Set()
+let dictionaryCheckSet = new Set()
 let dictionary = []
 let dictionary_index = 0
 let frequency = null
@@ -45,8 +46,9 @@ function update(label, type, data) {
 			break
 		case MessageType.Submit:
 			if (!state.started || state.game.order[state.game.turn] != label) { return }
-			data = data.trim().normalize('NFD').replace(/n[\u0300-\u036f]/gi, 'nn').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-			if (dictionarySet.has(data) && !played[data] && data.includes(state.game.query)) {
+			data_old = data.trim()
+			data = normalize(data_old)
+			if (dictionaryCheckSet.has(data) && !played[data] && data.includes(normalize(state.game.query))) {
 				for (const letter of data) {
 					if (letter in state.game.letters[label]) {
 						state.game.letters[label][letter] = Math.max(0, state.game.letters[label][letter] - 1)
@@ -69,7 +71,7 @@ function update(label, type, data) {
 				
 				played[data] = true
 				if(state.settings.shortening_timer) { state.game.timers[label] = Math.max(5, state.game.timers[label] - 1) }
-				state.game.lastSolve[label] = data
+				state.game.lastSolve[label] = data_old
 				state.game.turn = (state.game.turn + 1) % state.game.order.length
 				startTurn()
 			} else {
@@ -268,7 +270,6 @@ function getQuery() {
 }
 
 function loadDefaultDictionary(language, no_update) {
-	
 	language = ['english', 'spanish', 'french', 'dutch'].includes(language) ? language : 'english'
 	if(language == state.settings.dictionary) { return }
 	state.settings.dictionary = '...'
@@ -280,6 +281,7 @@ function loadDefaultDictionary(language, no_update) {
 		fetch(`${BasePath}dictionaries/${language}.freq.json`).then(res => res.json())
 	]).then(([dict, freq]) => {
 		dictionarySet = new Set(dict.split(/\s+/))
+		dictionaryCheckSet = new Set([...dictionarySet].map(normalize))
 		frequency = freq
 		state.settings.dictionary = language
 		if (!no_update) {
@@ -292,6 +294,7 @@ loadDefaultDictionary(language, true)
 
 function loadDictionary(dict, freq) {
 	dictionarySet = new Set(dict.split(/\s+/))
+	dictionaryCheckSet = new Set([...dictionarySet].map(normalize))
 	frequency = freq
 	state.settings.dictionary = 'custom'
 	sendStateUpdate()
@@ -366,6 +369,10 @@ function calculateFrequency(dictionary){
 		freq[value].push(key) 
 	}
 	return Object.entries(freq).map((e) => [Number(e[0]), e[1]])
+}
+
+function normalize(string) {
+	return string.normalize('NFD').replace(/n[\u0300-\u036f]/gi, 'nn').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
 {
