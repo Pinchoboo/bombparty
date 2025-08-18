@@ -1,7 +1,7 @@
 body {
     margin: auto;
     text-align: center;
-	 -moz-transform: scale(1.35); /* for Firefox, default 1*/
+	 /* -moz-transform: scale(1.35); /* for Firefox, default 1 (broken) */ 
     zoom:135%; /* For Chrome, IE, default 100%*/
 }
 
