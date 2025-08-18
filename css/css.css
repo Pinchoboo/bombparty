@@ -1,140 +1,168 @@
 body {
-    margin: auto;
-    text-align: center;
-	 /* -moz-transform: scale(1.35); /* for Firefox, default 1 (broken) */ 
-    zoom:135%; /* For Chrome, IE, default 100%*/
+	margin: auto;
+	text-align: center;
+	/* -moz-transform: scale(1.35); /* for Firefox, default 1 (broken) */
+	zoom: 135%; /* For Chrome, IE, default 100%*/
 }
 
-input[type="text"], input[type="number"] {
-    padding: 10px 14px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    width: 100%;
-    max-width: 400px;
-    box-sizing: border-box;
+input[type="text"],
+input[type="number"] {
+	padding: 10px 14px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	outline: none;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	width: 100%;
+	max-width: 400px;
+	box-sizing: border-box;
 	background-color: #dde6f0;
 }
 
-input[type="text"]:focus, input[type="number"]:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+input[type="text"]:focus,
+input[type="number"]:focus {
+	border-color: #007bff;
+	box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
-input.invalid, input.invalid:focus {
-    animation: shake 0.3s ease-in-out, glowRed 1s ease-in-out;
-    border-color: #dc3545;
-    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+input.invalid,
+input.invalid:focus {
+	animation: shake 0.3s ease-in-out, glowRed 1s ease-in-out;
+	border-color: #dc3545;
+	box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
 }
 
 @keyframes shake {
-    0% { transform: translateX(0); }
-    20% { transform: translateX(-5px); }
-    40% { transform: translateX(5px); }
-    60% { transform: translateX(-5px); }
-    80% { transform: translateX(5px); }
-    100% { transform: translateX(0); }
+	0% {
+		transform: translateX(0);
+	}
+
+	20% {
+		transform: translateX(-5px);
+	}
+
+	40% {
+		transform: translateX(5px);
+	}
+
+	60% {
+		transform: translateX(-5px);
+	}
+
+	80% {
+		transform: translateX(5px);
+	}
+
+	100% {
+		transform: translateX(0);
+	}
 }
 
 @keyframes glowRed {
-    0% { box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25); }
-    50% { box-shadow: 0 0 8px 4px rgba(220, 53, 69, 0.5); }
-    100% { box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25); }
+	0% {
+		box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+	}
+
+	50% {
+		box-shadow: 0 0 8px 4px rgba(220, 53, 69, 0.5);
+	}
+
+	100% {
+		box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+	}
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: 500;
-    border: none;
-    border-radius: 6px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+	padding: 10px 20px;
+	font-size: 16px;
+	font-weight: 500;
+	border: none;
+	border-radius: 6px;
+	background-color: #007bff;
+	color: white;
+	cursor: pointer;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	background-color: #0056b3;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 button:active {
-    background-color: #004494;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+	background-color: #004494;
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 button:disabled {
-    background-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-    box-shadow: none;
+	background-color: #cccccc;
+	color: #666666;
+	cursor: not-allowed;
+	box-shadow: none;
 }
 
 input[type="checkbox"] {
-    appearance: none;
+	appearance: none;
 	top: 5px;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    cursor: pointer;
-    position: relative;
-    transition: background-color 0.2s, border-color 0.2s;
+	width: 18px;
+	height: 18px;
+	border: 2px solid #ccc;
+	border-radius: 4px;
+	background-color: #fff;
+	cursor: pointer;
+	position: relative;
+	transition: background-color 0.2s, border-color 0.2s;
 }
 
 input[type="checkbox"]:checked {
-    background-color: #007bff;
-    border-color: #007bff;
+	background-color: #007bff;
+	border-color: #007bff;
 }
 
 input[type="checkbox"]:checked::after {
-    content: "";
-    position: absolute;
-    left: 4px;
-    width: 6px;
-    height: 12px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+	content: "";
+	position: absolute;
+	left: 4px;
+	width: 6px;
+	height: 12px;
+	border: solid white;
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
 }
 
 .file-label {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: 500;
-    border: none;
-    border-radius: 6px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
-    overflow: hidden;
+	display: inline-block;
+	padding: 10px 20px;
+	font-size: 16px;
+	font-weight: 500;
+	border: none;
+	border-radius: 6px;
+	background-color: #007bff;
+	color: white;
+	cursor: pointer;
+	transition: background-color 0.2s ease, box-shadow 0.2s ease;
+	position: relative;
+	overflow: hidden;
 }
 
 .file-label:hover {
-    background-color: #0056b3;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	background-color: #0056b3;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .file-label:active {
-    background-color: #004494;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+	background-color: #004494;
+	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .file-input {
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
+	position: absolute;
+	left: 0;
+	top: 0;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
 }
 
 input[type="text"]:disabled,
@@ -143,31 +171,31 @@ input[type="file"]:disabled,
 .file-label:disabled,
 .file-label:hover:disabled,
 .file-label:active:disabled {
-    background-color: #aaaaaa70;
-    cursor: not-allowed;
+	background-color: #aaaaaa70;
+	cursor: not-allowed;
 	color: #dde6f0;
 }
 
 input[type="checkbox"]:disabled {
-    background-color: #ffffff70;
-    cursor: not-allowed;
+	background-color: #ffffff70;
+	cursor: not-allowed;
 }
 
 input[type="checkbox"]:checked:disabled {
-    background-color: #007bff70;
-    border-color: #007bff70;
-    cursor: not-allowed;
+	background-color: #007bff70;
+	border-color: #007bff70;
+	cursor: not-allowed;
 }
 
 @font-face {
-  font-family: NotoColorEmojiLimited;
-  unicode-range: U+1F1E6-1F1FF;
-  src: url(https://raw.githack.com/googlefonts/noto-emoji/main/fonts/NotoColorEmoji.ttf);
+	font-family: NotoColorEmojiLimited;
+	unicode-range: U+1F1E6-1F1FF;
+	src: url(https://raw.githack.com/googlefonts/noto-emoji/main/fonts/NotoColorEmoji.ttf);
 }
 
 .flag {
-  cursor: pointer;
-  font-family: 'NotoColorEmojiLimited', -apple-system, BlinkMacSystemFont, 
-  'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 
-  'Segoe UI Emoji', 'Segoe UI Symbol';
+	cursor: pointer;
+	font-family: 'NotoColorEmojiLimited', -apple-system, BlinkMacSystemFont,
+		'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+		'Segoe UI Emoji', 'Segoe UI Symbol';
 }

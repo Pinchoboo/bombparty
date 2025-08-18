@@ -11,7 +11,17 @@ function x(s) {
 }
 
 function insertJoinUrl(url) {
-	document.getElementById('invite').innerHTML = `Invite link <a href="${url}" target="_blank">&#128279;</a>`;
+	document.getElementById('invite').innerHTML = `<div id="popup">Copied link!</div><b onclick="copy('${url}')"> &#128279;Click to copy invite link</b>`;
+}
+
+function copy(s){
+	navigator.clipboard.writeText(s).then(() => {
+		const popup = document.getElementById("popup");
+		popup.classList.add("show");
+		setTimeout(() => {
+			popup.classList.remove("show");
+		}, 1000);
+	});
 }
 
 function insertGameHtml() {
